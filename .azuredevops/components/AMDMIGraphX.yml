@@ -71,7 +71,7 @@ jobs:
       parameters:
         componentName: half5_6
         branchName: develop
-        pipelineId: $(half5_6-pipeline-id)
+        pipelineId: $(half560-pipeline-id)
 # manual build case: triggered by ROCm/ROCm repo
   - ${{ if ne(parameters.checkoutRef, '') }}:
     - template: ${{ variables.CI_TEMPLATE_PATH }}/steps/artifact-download.yml
@@ -86,7 +86,7 @@ jobs:
     - template: ${{ variables.CI_TEMPLATE_PATH }}/steps/artifact-download.yml
       parameters:
         componentName: \tag-builds\rocmlir
-        pipelineId: $(half5_6-tagged-pipeline-id)
+        pipelineId: $(half560-tagged-pipeline-id)
   - script: 'ls -1R /opt/rocm'
     displayName: 'Artifact listing'
   - script: 'ls -1R $(Agent.BuildDirectory)/rocm'
