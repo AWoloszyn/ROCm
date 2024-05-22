@@ -70,7 +70,7 @@ jobs:
         dependencyList: ${{ parameters.rocmDependencies }}
         dependencySource: tag-builds
   - script: export PATH="$(Agent.BuildDirectory)/rocm/llvm/bin:$(Agent.BuildDirectory)/rocm/bin:$PATH"
-  - script: which hipcc
+  - script: echo $PATH
   - template: ${{ variables.CI_TEMPLATE_PATH }}/steps/build-cmake.yml
     parameters:
       extraBuildFlags: >-
