@@ -31,12 +31,15 @@ parameters:
     - ROCR-Runtime
     - clr
     - rocminfo
+    - rocprofiler-register
 
 jobs:
 - job: rocBLAS
   variables:
   - group: common
   - template: /.azuredevops/variables-global.yml
+  - name: HIP_ROCCLR_HOME
+    value: $(Build.BinariesDirectory)/rocm
   pool: ${{ variables.MEDIUM_BUILD_POOL }}
   workspace:
     clean: all
@@ -79,5 +82,7 @@ jobs:
         -DBUILD_CLIENTS_TESTS=ON
         -DBUILD_CLIENTS_BENCHMARKS=OFF
         -DBUILD_CLIENTS_SAMPLES=OFF
+        -DROCM_PATH=$(Agent.BuildDirectory)/rocm
+        -DTENSILE_ROCM_ASSEMBLER_PATH=$(Agent.BuildDirectory)/rocm/llvm/bin/amdclang++
         -GNinja
   - template: ${{ variables.CI_TEMPLATE_PATH }}/steps/artifact-upload.yml
