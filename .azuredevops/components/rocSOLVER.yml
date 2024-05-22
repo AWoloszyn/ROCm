@@ -45,6 +45,12 @@ jobs:
   - template: ${{ variables.CI_TEMPLATE_PATH }}/steps/checkout.yml
     parameters:
       checkoutRepo: ${{ parameters.checkoutRepo }}
+  - task: Bash@3
+    displayName: 'Clone lapack'
+    inputs:
+      targetType: inline
+      script: git clone --depth 1 --branch v3.9.1 https://github.com/Reference-LAPACK/lapack
+      workingDirectory: '$(Build.SourcesDirectory)'
 # CI case: download latest default branch build
   - ${{ if eq(parameters.checkoutRef, '') }}:
     - template: ${{ variables.CI_TEMPLATE_PATH }}/steps/dependencies-rocm.yml
@@ -57,12 +63,6 @@ jobs:
       parameters:
         dependencyList: ${{ parameters.rocmDependencies }}
         dependencySource: tag-builds
-  - task: Bash@3
-    displayName: 'Clone lapack'
-    inputs:
-      targetType: inline
-      script: git clone --depth 1 --branch v3.9.1 https://github.com/Reference-LAPACK/lapack
-      workingDirectory: '$(Build.SourcesDirectory)'
   - template: ${{ variables.CI_TEMPLATE_PATH }}/steps/build-cmake.yml
     parameters:
       componentName: lapack
@@ -82,7 +82,6 @@ jobs:
         -DCMAKE_CXX_COMPILER=$(Agent.BuildDirectory)/rocm/llvm/bin/amdclang++
         -DCMAKE_C_COMPILER=$(Agent.BuildDirectory)/rocm/llvm/bin/amdclang
         -DAMDGPU_TARGETS=gfx1030;gfx1100
-        -DUSE_CUDA=OFF
         -DBUILD_CLIENTS_TESTS=ON
         -DBUILD_CLIENTS_BENCHMARKS=OFF
         -DBUILD_CLIENTS_SAMPLES=OFF
