@@ -85,5 +85,6 @@ jobs:
         -DBUILD_CLIENTS_TESTS=ON
         -DBUILD_CLIENTS_BENCHMARKS=OFF
         -DBUILD_CLIENTS_SAMPLES=OFF
+        -DROCM_PATH=$(Agent.BuildDirectory)/rocm
         -GNinja
   - template: ${{ variables.CI_TEMPLATE_PATH }}/steps/artifact-upload.yml
