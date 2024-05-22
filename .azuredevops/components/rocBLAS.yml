@@ -74,15 +74,14 @@ jobs:
         -DCMAKE_TOOLCHAIN_FILE=toolchain-linux.cmake
         -DCMAKE_PREFIX_PATH=$(Agent.BuildDirectory)/rocm;$(Pipeline.Workspace)/deps-install
         -DCMAKE_BUILD_TYPE=Release
-        -DCMAKE_CXX_COMPILER=$(Agent.BuildDirectory)/rocm/bin/hipcc
-        -DCMAKE_C_COMPILER=$(Agent.BuildDirectory)/rocm/bin/hipcc
+        -DCMAKE_CXX_COMPILER=$(Agent.BuildDirectory)/rocm/llvm/bin/amdclang++
+        -DCMAKE_C_COMPILER=$(Agent.BuildDirectory)/rocm/llvm/bin/amdclang
         -DAMDGPU_TARGETS=gfx1030;gfx1100
         -DTensile_CODE_OBJECT_VERSION=default
         -DTensile_LOGIC=asm_full
         -DTensile_SEPARATE_ARCHITECTURES=ON
         -DTensile_LAZY_LIBRARY_LOADING=ON
         -DTensile_LIBRARY_FORMAT=msgpack
-        -DTENSILE_VENV_UPGRADE_PIP=ON
         -DBUILD_CLIENTS_TESTS=ON
         -DBUILD_CLIENTS_BENCHMARKS=OFF
         -DBUILD_CLIENTS_SAMPLES=OFF
