@@ -19,6 +19,7 @@ parameters:
     - libgtest-dev
     - wget
     - python3-pip
+    - libdrm-dev
 - name: pipModules
   type: object
   default:
@@ -40,6 +41,8 @@ jobs:
   - template: /.azuredevops/variables-global.yml
   - name: HIP_ROCCLR_HOME
     value: $(Build.BinariesDirectory)/rocm
+  - name: TENSILE_ROCM_ASSEMBLER_PATH
+    value: $(Agent.BuildDirectory)/rocm/llvm/bin/clang
   pool: ${{ variables.MEDIUM_BUILD_POOL }}
   workspace:
     clean: all
@@ -64,6 +67,7 @@ jobs:
       parameters:
         dependencyList: ${{ parameters.rocmDependencies }}
         dependencySource: tag-builds
+  - script: export PATH=$(Agent.BuildDirectory)/rocm/bin;$PATH
   - template: ${{ variables.CI_TEMPLATE_PATH }}/steps/build-cmake.yml
     parameters:
       extraBuildFlags: >-
@@ -82,7 +86,5 @@ jobs:
         -DBUILD_CLIENTS_TESTS=ON
         -DBUILD_CLIENTS_BENCHMARKS=OFF
         -DBUILD_CLIENTS_SAMPLES=OFF
-        -DROCM_PATH=$(Agent.BuildDirectory)/rocm
-        -DTENSILE_ROCM_ASSEMBLER_PATH=$(Agent.BuildDirectory)/rocm/llvm/bin/amdclang++
         -GNinja
   - template: ${{ variables.CI_TEMPLATE_PATH }}/steps/artifact-upload.yml
