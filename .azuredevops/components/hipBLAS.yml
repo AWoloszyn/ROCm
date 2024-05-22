@@ -16,6 +16,7 @@ parameters:
     - libgtest-dev
     - wget
     - python3-pip
+    - libomp-dev
 - name: rocmDependencies
   type: object
   default:
