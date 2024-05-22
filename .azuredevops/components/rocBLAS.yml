@@ -18,6 +18,7 @@ parameters:
     - googletest
     - libgtest-dev
     - wget
+    - python3-pip
 - name: pipModules
   type: object
   default:
@@ -37,8 +38,6 @@ jobs:
   - group: common
   - template: /.azuredevops/variables-global.yml
   pool: ${{ variables.MEDIUM_BUILD_POOL }}
-  container:
-    image: ${{ variables.DOCKER_IMAGE_NAME }}:${{ variables.LATEST_DOCKER_VERSION }}
   workspace:
     clean: all
   steps:
