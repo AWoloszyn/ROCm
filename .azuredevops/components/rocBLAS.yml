@@ -43,6 +43,8 @@ jobs:
     value: $(Build.BinariesDirectory)/rocm
   - name: TENSILE_ROCM_ASSEMBLER_PATH
     value: $(Agent.BuildDirectory)/rocm/llvm/bin/clang
+  - name: CMAKE_CXX_COMPILER
+    value: $(Agent.BuildDirectory)/rocm/bin/hipcc
   pool: ${{ variables.MEDIUM_BUILD_POOL }}
   workspace:
     clean: all
