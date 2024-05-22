@@ -10,15 +10,23 @@ parameters:
   default:
     - cmake
     - ninja-build
-    - rocblas
-    - rocsparse
-    - hipsparse
     - libsuitesparse-dev
     - gfortran
     - libfmt-dev
     - git
     - googletest
     - libgtest-dev
+- name: rocmDependencies
+  type: object
+  default:
+    - rocm-cmake
+    - llvm-project
+    - ROCR-Runtime
+    - clr
+    - rocminfo
+    - rocBLAS
+    - rocSPARSE
+    - hipSPARSE
 
 jobs:
 - job: rocSOLVER
@@ -38,6 +46,18 @@ jobs:
   - template: ${{ variables.CI_TEMPLATE_PATH }}/steps/checkout.yml
     parameters:
       checkoutRepo: ${{ parameters.checkoutRepo }}
+# CI case: download latest default branch build
+  - ${{ if eq(parameters.checkoutRef, '') }}:
+    - template: ${{ variables.CI_TEMPLATE_PATH }}/steps/dependencies-rocm.yml
+      parameters:
+        dependencyList: ${{ parameters.rocmDependencies }}
+        dependencySource: staging
+# manual build case: triggered by ROCm/ROCm repo
+  - ${{ if ne(parameters.checkoutRef, '') }}:
+    - template: ${{ variables.CI_TEMPLATE_PATH }}/steps/dependencies-rocm.yml
+      parameters:
+        dependencyList: ${{ parameters.rocmDependencies }}
+        dependencySource: tag-builds
   - task: Bash@3
     displayName: 'Clone lapack'
     inputs:
@@ -59,9 +79,9 @@ jobs:
   - template: ${{ variables.CI_TEMPLATE_PATH }}/steps/build-cmake.yml
     parameters:
       extraBuildFlags: >-
-        -DCMAKE_PREFIX_PATH="/opt/rocm;$(Pipeline.Workspace)/deps-install"
-        -DCMAKE_CXX_COMPILER=/opt/rocm/llvm/bin/amdclang++
-        -DCMAKE_C_COMPILER=/opt/rocm/llvm/bin/amdclang
+        -DCMAKE_PREFIX_PATH=$(Agent.BuildDirectory)/rocm;$(Pipeline.Workspace)/deps-install
+        -DCMAKE_CXX_COMPILER=$(Agent.BuildDirectory)/rocm/llvm/bin/amdclang++
+        -DCMAKE_C_COMPILER=$(Agent.BuildDirectory)/rocm/llvm/bin/amdclang
         -DAMDGPU_TARGETS=gfx1030;gfx1100
         -DUSE_CUDA=OFF
         -DBUILD_CLIENTS_TESTS=ON
